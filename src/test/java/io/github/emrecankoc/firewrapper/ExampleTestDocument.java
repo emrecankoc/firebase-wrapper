@@ -1,4 +1,4 @@
-package com.github.emrecankoc.firewrapper;
+package io.github.emrecankoc.firewrapper;
 
 @FirestoreDocument(collection = "EXAMPLE_TEST_DOCUMENT")
 public class ExampleTestDocument {

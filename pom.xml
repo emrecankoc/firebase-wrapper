@@ -1,13 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.github.emrecankoc</groupId>
+  <groupId>io.github.emrecankoc</groupId>
   <artifactId>firebase-wrapper</artifactId>
   <version>0.1-SNAPSHOT</version>
-  <name>firebase-wrapper</name>
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>Firebase-Wrapper for java</description>
+  <url>https://github.com/emrecankoc/firebase-wrapper</url>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>http://www.opensource.org/licenses/mit-license.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Placeholder</name>
+      <email>placeholder</email>
+      <organization>Github</organization>
+      <organizationUrl>https://github.com/emrecankoc</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <!-- Should be format scm:git:git or scm:git:https -->
+    <connection>scm:git:https://github.com/emrecankoc/firebase-wrapper.git</connection>
+    <developerConnection>scm:git:ssh://github.com/emrecankoc/firebase-wrapper.git</developerConnection>
+    <url>https://github.com/emrecankoc/firebase-wrapper.git</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,6 +57,8 @@
       <artifactId>firebase-admin</artifactId>
       <version>6.12.2</version>
     </dependency>
+
+    <!-- Test dependencies-->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
