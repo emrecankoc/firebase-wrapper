@@ -19,8 +19,7 @@
 
   <developers>
     <developer>
-      <name>Placeholder</name>
-      <email>placeholder</email>
+      <name>Emrecan Koç</name>
       <organization>Github</organization>
       <organizationUrl>https://github.com/emrecankoc</organizationUrl>
     </developer>
@@ -35,15 +34,12 @@
   </scm>
 
   <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
     <repository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      <id>github</id>
+      <name>GitHub OWNER Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/emrecankoc/firebase-wrapper</url>
     </repository>
-  </distributionManagement>
+ </distributionManagement>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
