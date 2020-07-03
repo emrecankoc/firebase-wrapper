@@ -1,4 +1,4 @@
-package com.github.emrecankoc.firewrapper;
+package io.github.emrecankoc.firewrapper;
 
 public class FirestoreException extends Exception {
 
