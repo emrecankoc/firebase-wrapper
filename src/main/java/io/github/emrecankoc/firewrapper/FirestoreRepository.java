@@ -213,17 +213,22 @@ public class FirestoreRepository<T> implements IFirestoreRepository<T> {
                         break;
                     case GREATER:
                         query = query.whereGreaterThan(q.getFieldPath(), q.getParameter());
+                        break;
                     case GREATER_EQUAL:
                         query = query.whereGreaterThanOrEqualTo(q.getFieldPath(), q.getParameter());
+                        break;
                     case LESSER:
                         query = query.whereLessThan(q.getFieldPath(), q.getParameter());
+                        break;
                     case LESSER_EQUAL:
                         query = query.whereLessThanOrEqualTo(q.getFieldPath(), q.getParameter());
+                        break;
                     case ARRAY_CONTAINS:
                         query = query.whereArrayContains(q.getFieldPath(), q.getParameter());
+                        break;
                     case IN:
                         query = query.whereIn(q.getFieldPath(), (List<?>) q.getParameter());
-
+                        break;
                     default:
                         break;
                 }
