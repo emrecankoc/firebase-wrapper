@@ -24,6 +24,6 @@ jobs:
       run: mvn -B package --file pom.xml
 
     - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -Dversion=${GITHUB_REF#refs/tags/v} -s $GITHUB_WORKSPACE/settings.xml
+      run: mvn -Drevision=${GITHUB_REF#refs/tags/v} deploy -s $GITHUB_WORKSPACE/settings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}

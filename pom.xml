@@ -4,7 +4,7 @@
 
   <groupId>io.github.emrecankoc</groupId>
   <artifactId>firebase-wrapper</artifactId>
-  <version>${version:LATEST-SNAPSHOT}</version>
+  <version>${revision}</version>
   <name>${project.groupId}:${project.artifactId}</name>
   <description>Firebase-Wrapper for java</description>
   <url>https://github.com/emrecankoc/firebase-wrapper</url>
@@ -42,6 +42,7 @@
  </distributionManagement>
 
   <properties>
+    <revision>LATEST-SNAPSHOT</revision>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
