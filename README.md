@@ -49,3 +49,4 @@ Yes, it's too much effort to use this package.
 ## Contribution
 
 I've no idea what to do with this package. I'm just experiencing github's package registry and actions features. If you find good use of this package feel free to contribute.
+
