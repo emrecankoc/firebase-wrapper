@@ -39,13 +39,14 @@
       <name>GitHub OWNER Apache Maven Packages</name>
       <url>https://maven.pkg.github.com/emrecankoc/firebase-wrapper</url>
     </repository>
- </distributionManagement>
+  </distributionManagement>
 
   <properties>
     <revision>LATEST-SNAPSHOT</revision>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
+    <jackson.version>2.11.0</jackson.version>
   </properties>
 
   <dependencies>
@@ -54,7 +55,11 @@
       <artifactId>firebase-admin</artifactId>
       <version>6.12.2</version>
     </dependency>
-
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
     <!-- Test dependencies-->
     <dependency>
       <groupId>junit</groupId>
@@ -73,6 +78,30 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <artifactId>maven-source-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <phase>deploy</phase>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <phase>deploy</phase>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.3</version>

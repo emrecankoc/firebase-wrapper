@@ -8,12 +8,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
@@ -25,12 +24,11 @@ import com.google.cloud.firestore.QuerySnapshot;
 
 public class FirestoreRepository<T> implements IFirestoreRepository<T> {
 
-    private static final String PARSE_EXCEPTION = "Exception occured when parsing fields for entity";
     private Class<T> clazz;
     private String collectionName;
     private Field firebaseIDField;
-    private Map<String, Method> entityReadMethods;
-    private Map<String, Method> entityWriteMethods;
+    private Method readMethodForID;
+    private ObjectMapper objectMapper = new ObjectMapper();
     private Firestore firestore;
 
     public FirestoreRepository(Firestore firestore, Class<T> clazz) {
@@ -53,19 +51,9 @@ public class FirestoreRepository<T> implements IFirestoreRepository<T> {
             collectionName = docAnnotation.collection();
         }
 
-        entityReadMethods = new HashMap<>();
-        entityWriteMethods = new HashMap<>();
-
         Field[] fields = this.clazz.getDeclaredFields();
         for (Field field : fields) {
-            try {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor((String) field.getName(), this.clazz);
-                entityReadMethods.put(field.getName(), propertyDescriptor.getReadMethod());
-                entityWriteMethods.put(field.getName(), propertyDescriptor.getWriteMethod());
-            } catch (IntrospectionException e) {
-                // TODO: add log
-            }
-
+            
             FirestoreID annotation = field.getAnnotation(FirestoreID.class);
             if (annotation == null) {
                 continue;
@@ -82,6 +70,12 @@ public class FirestoreRepository<T> implements IFirestoreRepository<T> {
             }
 
             firebaseIDField = field;
+            try {
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor((String) field.getName(), this.clazz);
+                readMethodForID = propertyDescriptor.getReadMethod();
+            } catch (IntrospectionException e) {
+                // TODO: add log
+            }
         }
 
         if (firebaseIDField == null) {
@@ -104,34 +98,6 @@ public class FirestoreRepository<T> implements IFirestoreRepository<T> {
         }
         return false;
     }
-
-    private Map<String, Object> entityToMap(T entity) throws FirestoreException {
-        try {
-            Map<String, Object> data = new HashMap<>();
-            for (Field field : entity.getClass().getFields()) {
-                data.put(field.getName(), entityReadMethods.get(field.getName()).invoke(entity));
-            }
-            return data;
-        } catch (Exception e) {
-            throw new FirestoreException(PARSE_EXCEPTION, e);
-        }
-    }
-
-    private <R> R mapToEntity(Map<String, Object> data, Class<R> clazz) throws FirestoreException {
-        try {
-            R entity = (R) clazz.getDeclaredConstructor().newInstance();
-            for (Entry<String, Object> item : data.entrySet()) {
-                entityWriteMethods.get(item.getKey()).invoke(entity, item.getValue());
-            }
-            return entity;
-        } catch (Exception e) {
-            throw new FirestoreException(PARSE_EXCEPTION, e);
-        }
-    }
-
-    private T mapToEntity(Map<String, Object> data) throws FirestoreException {
-        return (T) mapToEntity(data, clazz);
-    }
     // #region
 
     /**
@@ -140,13 +106,15 @@ public class FirestoreRepository<T> implements IFirestoreRepository<T> {
      * @param entity
      * @return
      */
+    @SuppressWarnings("unchecked")
     public String save(T entity) throws FirestoreException {
         try {
-            String id = (String) entityReadMethods.get(firebaseIDField.getName()).invoke(entity);
+            String id = (String) readMethodForID.invoke(entity);
 
             DocumentReference doc = id != null ? getCollection().document(id) : getCollection().document();
 
-            doc.set(entityToMap(entity)).get();
+            Map<String, Object> mapValue = objectMapper.convertValue(entity, Map.class);
+            doc.set(mapValue).get();
             return doc.getId();
         } catch (InterruptedException | ExecutionException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
@@ -164,7 +132,7 @@ public class FirestoreRepository<T> implements IFirestoreRepository<T> {
             List<QueryDocumentSnapshot> documents = query.get().getDocuments();
             Collection<T> result = new ArrayList<>();
             for (QueryDocumentSnapshot doc : documents) {
-                result.add(mapToEntity(doc.getData()));
+                result.add(objectMapper.convertValue(doc.getData(), clazz));
             }
             return result;
         } catch (InterruptedException | ExecutionException e) {
@@ -180,7 +148,7 @@ public class FirestoreRepository<T> implements IFirestoreRepository<T> {
             if (documentSnapshot == null) {
                 throw new FirestoreNotFoundException();
             }
-            return mapToEntity(documentSnapshot.getData());
+            return objectMapper.convertValue(documentSnapshot.getData(), clazz);
         } catch (InterruptedException | ExecutionException e) {
             throw new FirestoreException(e);
         }
@@ -237,7 +205,7 @@ public class FirestoreRepository<T> implements IFirestoreRepository<T> {
             List<QueryDocumentSnapshot> documents = query.get().get().getDocuments();
             Collection<R> result = new ArrayList<>();
             for (QueryDocumentSnapshot doc : documents) {
-                result.add(mapToEntity(doc.getData(), clazz));
+                result.add(objectMapper.convertValue(doc.getData(), clazz));
             }
 
             return result;
