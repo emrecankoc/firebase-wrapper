@@ -1,4 +1,4 @@
-# Firebase-Wrapper
+# Firebase-Wrapper ![Tests](https://github.com/emrecankoc/firebase-wrapper/workflows/Tests/badge.svg)
 
 Spring like repository wrapper for firestore
 
